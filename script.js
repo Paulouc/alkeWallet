@@ -7,7 +7,7 @@ $(document).ready(function () {
             const password = $('#password').val();
 
             if (user === 'admin' && password === '1234') {
-                localStorage.setItem('saldo', 1000);
+                //localStorage.setItem('saldo', 1000);
                 window.location.href = 'menu.html';
             } else {
                 $('#alert-container').html(`
@@ -18,13 +18,18 @@ $(document).ready(function () {
             }
         });
     }
-    let saldoMenu = Number(localStorage.getItem('saldo'));
-    actualizarSaldo();    
-    function guardarTransaccion(tipo, monto) {
+    let saldo = Number(localStorage.getItem('saldo'));
+    let contactos = JSON.parse(localStorage.getItem("contactos")) || [];
+
+    actualizarSaldo();
+
+    function guardarTransaccion(tipo, monto, banco, cuenta) {
         let historial = JSON.parse(localStorage.getItem('transacciones')) || [];
         const nuevaTransaccion = {
             tipo: tipo,
             monto: monto,
+            banco: banco,
+            cuenta: cuenta,
             fecha: new Date().toLocaleString()
         };
         historial.unshift(nuevaTransaccion);
@@ -34,20 +39,20 @@ $(document).ready(function () {
     function actualizarSaldo() {
         //$("#saldoMenu").text("Saldo: $" + saldo.toLocaleString());
         //saldo = Number(localStorage.getItem('saldo'));
-        if (saldoMenu < 5000) {
-            $("#saldoMenu")
+        if (saldo < 5000) {
+            $("#saldo")
                 .removeClass("saldo-alto")
                 .addClass("saldo-bajo");
         } else {
-            $("#saldoMenu")
+            $("#saldo")
                 .removeClass("saldo-bajo")
                 .addClass("saldo-alto");
         }
     }
 
 
-    
-    $('#saldoMenu').text(saldoMenu);
+
+    $('#saldo').text(saldo);
 
     $('#depositar').click(function () {
         $('#mensaje').text('Redirigiendo a Depósito...');
@@ -86,7 +91,6 @@ $(document).ready(function () {
 
 
     if ($('#depositForm').length) {
-        let saldo = Number(localStorage.getItem('saldo')) || 0;
         $('#saldo').text(saldo);
 
         $('#depositForm').submit(function (e) {
@@ -95,11 +99,11 @@ $(document).ready(function () {
             const monto = Number($('#monto').val());
             saldo += monto;
             localStorage.setItem('saldo', saldo);
-            guardarTransaccion('deposito', monto);
+            guardarTransaccion('deposito', monto, '', '');
 
             $('#saldo').text(saldo);
             $('#leyenda').text(`Monto depositado: $${monto}`);
-            
+
 
             $('#alert-container').html(`
         <div class="alert alert-success mt-2">
@@ -113,7 +117,7 @@ $(document).ready(function () {
 
 
     if ($('#nuevo').length) {
-        let contactos = [];
+
         let seleccionado = null;
 
         function render(lista) {
@@ -121,11 +125,12 @@ $(document).ready(function () {
             lista.forEach((c, i) => {
                 $('#lista').append(`
           <li class="list-group-item" data-i="${i}">
-            ${c.nombre}
+            ${c.nombre}, ${c.rut}, ${c.cuenta}, ${c.banco}
           </li>
         `);
             });
         }
+        render(contactos);
 
         $('#nuevo').click(() => $('#formContacto').show());
         $('#cancelar').click(() => $('#formContacto').hide());
@@ -133,8 +138,15 @@ $(document).ready(function () {
         $('#formContacto').submit(function (e) {
             e.preventDefault();
 
-            contactos.push({ nombre: $('#nombre').val() });
-            render(contactos);
+            contactos.push({
+                rut: $('#rut').val(),
+                nombre: $('#nombre').val(),
+                cuenta: $('#nCuenta').val(),
+                banco: $('#banco').val()
+            });
+            console.log(contactos)
+            localStorage.setItem("contactos", JSON.stringify(contactos));
+            //render(contactos);
             this.reset();
             $('#formContacto').hide();
         });
@@ -148,13 +160,14 @@ $(document).ready(function () {
             $('.list-group-item').removeClass('selected');
             $(this).addClass('selected');
             seleccionado = $(this).text();
+            console.log(seleccionado);
             $('#enviarBtn').show();
         });
 
         $('#enviarBtn').click(function () {
-
+            let contactos = JSON.parse(localStorage.getItem("contactos")) || [];
             let monto = Number($('#montoEnvio').val());
-            let saldo = Number(localStorage.getItem('saldo'));
+            //let saldo = Number(localStorage.getItem('saldo'));
 
             if (monto <= 0) {
                 alert('Ingrese un monto válido');
@@ -170,23 +183,20 @@ $(document).ready(function () {
             localStorage.setItem('saldo', saldo);
             guardarTransaccion('transferencia', monto);
 
-            $('#confirmacion').text(
-                'Se enviaron $' + monto + '. Nuevo saldo: $' + saldo
-            );
+            $('#confirmacion').text('Transferencia a ' + seleccionado + 'realizada con exito');
 
             setTimeout(function () {
                 window.location.href = 'menu.html';
             }, 2000);
         });
     }
-
+    
 
     if ($('#filtro').length) {
 
         function getTipoTransaccion(tipo) {
             const nombres = {
                 deposito: 'Depósito',
-                compra: 'Compra',
                 transferencia: 'Transferencia'
             };
             return nombres[tipo] || 'Otro';

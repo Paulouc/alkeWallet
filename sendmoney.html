@@ -9,13 +9,15 @@
 <body class="container mt-4">
 
 <h3>Enviar Dinero</h3>
-<p>$<span id="saldoMenu"></span></p>
+<p class="signoPeso">$<span id="saldo"></span></p>
 
 <button id="nuevo" class="btn btn-primary mb-2">Agregar nuevo contacto</button>
 
 <form id="formContacto" class="mb-3" style="display:none;">
+  <input class="form-control mb-1" id="rut" placeholder="Rut">
   <input class="form-control mb-1" id="nombre" placeholder="Nombre">
-  <input class="form-control mb-1" id="ncuenta" placeholder="Nro de cuenta">
+  <input class="form-control mb-1" id="nCuenta" placeholder="Numero de cuenta">
+  <input class="form-control mb-1" id="banco" placeholder="Banco">
   <button class="btn btn-success">Guardar</button>
   <button type="button" id="cancelar" class="btn btn-danger">Cancelar</button>
 </form>
@@ -26,7 +28,7 @@
 <input type="number" id="montoEnvio" class="form-control mb-2" placeholder="Monto a enviar">
 <button id="enviarBtn" class="btn btn-primary" style="display:none;">Enviar dinero</button>
 
-<p id="confirmacion" class="mt-3 text-success"></p>
+<p id="confirmacion" class="mt-3"></p>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="script.js"></script>
