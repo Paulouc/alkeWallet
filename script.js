@@ -1,15 +1,4 @@
 $(document).ready(function () {
-    function guardarTransaccion(tipo, monto) {
-        let historial = JSON.parse(localStorage.getItem('transacciones')) || [];
-        const nuevaTransaccion = {
-            tipo: tipo,
-            monto: monto,
-            fecha: new Date().toLocaleString()
-        };
-        historial.unshift(nuevaTransaccion);
-        localStorage.setItem('transacciones', JSON.stringify(historial));
-    }
-
     if ($('#loginForm').length) {
         $('#loginForm').submit(function (e) {
             e.preventDefault();
@@ -29,8 +18,35 @@ $(document).ready(function () {
             }
         });
     }
-
     let saldoMenu = Number(localStorage.getItem('saldo'));
+    actualizarSaldo();    
+    function guardarTransaccion(tipo, monto) {
+        let historial = JSON.parse(localStorage.getItem('transacciones')) || [];
+        const nuevaTransaccion = {
+            tipo: tipo,
+            monto: monto,
+            fecha: new Date().toLocaleString()
+        };
+        historial.unshift(nuevaTransaccion);
+        localStorage.setItem('transacciones', JSON.stringify(historial));
+    }
+
+    function actualizarSaldo() {
+        //$("#saldoMenu").text("Saldo: $" + saldo.toLocaleString());
+        //saldo = Number(localStorage.getItem('saldo'));
+        if (saldoMenu < 5000) {
+            $("#saldoMenu")
+                .removeClass("saldo-alto")
+                .addClass("saldo-bajo");
+        } else {
+            $("#saldoMenu")
+                .removeClass("saldo-bajo")
+                .addClass("saldo-alto");
+        }
+    }
+
+
+    
     $('#saldoMenu').text(saldoMenu);
 
     $('#depositar').click(function () {
@@ -83,6 +99,7 @@ $(document).ready(function () {
 
             $('#saldo').text(saldo);
             $('#leyenda').text(`Monto depositado: $${monto}`);
+            
 
             $('#alert-container').html(`
         <div class="alert alert-success mt-2">
