@@ -23,13 +23,14 @@ $(document).ready(function () {
 
     actualizarSaldo();
 
-    function guardarTransaccion(tipo, monto, banco, cuenta) {
+    function guardarTransaccion(tipo, monto, banco, cuenta, nombre) {
         let historial = JSON.parse(localStorage.getItem('transacciones')) || [];
         const nuevaTransaccion = {
             tipo: tipo,
             monto: monto,
             banco: banco,
             cuenta: cuenta,
+            nombre: nombre,
             fecha: new Date().toLocaleString()
         };
         historial.unshift(nuevaTransaccion);
@@ -99,7 +100,7 @@ $(document).ready(function () {
             const monto = Number($('#monto').val());
             saldo += monto;
             localStorage.setItem('saldo', saldo);
-            guardarTransaccion('deposito', monto, '', '');
+            guardarTransaccion('deposito', monto, '', '', '');
 
             $('#saldo').text(saldo);
             $('#leyenda').text(`Monto depositado: $${monto}`);
@@ -111,7 +112,7 @@ $(document).ready(function () {
         </div>
       `);
 
-            setTimeout(() => window.location.href = 'menu.html', 2000);
+            setTimeout(() => window.location.href = 'menu.html', 1000);
         });
     }
 
@@ -146,7 +147,7 @@ $(document).ready(function () {
             });
             console.log(contactos)
             localStorage.setItem("contactos", JSON.stringify(contactos));
-            //render(contactos);
+            render(contactos);
             this.reset();
             $('#formContacto').hide();
         });
@@ -159,15 +160,14 @@ $(document).ready(function () {
         $(document).on('click', '.list-group-item', function () {
             $('.list-group-item').removeClass('selected');
             $(this).addClass('selected');
-            seleccionado = $(this).text();
+            let index = $(this).data('i');
+            seleccionado = contactos[index];
             console.log(seleccionado);
             $('#enviarBtn').show();
         });
 
         $('#enviarBtn').click(function () {
-            let contactos = JSON.parse(localStorage.getItem("contactos")) || [];
             let monto = Number($('#montoEnvio').val());
-            //let saldo = Number(localStorage.getItem('saldo'));
 
             if (monto <= 0) {
                 alert('Ingrese un monto válido');
@@ -181,16 +181,23 @@ $(document).ready(function () {
 
             saldo = saldo - monto;
             localStorage.setItem('saldo', saldo);
-            guardarTransaccion('transferencia', monto);
+            guardarTransaccion(
+                'transferencia',
+                monto,
+                seleccionado.banco,
+                seleccionado.cuenta,
+                seleccionado.nombre
+            );
 
-            $('#confirmacion').text('Transferencia a ' + seleccionado + 'realizada con exito');
+            $('#confirmacion').text('Transferencia a ' + seleccionado.nombre + 'realizada con exito');
 
             setTimeout(function () {
                 window.location.href = 'menu.html';
             }, 2000);
         });
+
     }
-    
+
 
     if ($('#filtro').length) {
 
@@ -216,17 +223,28 @@ $(document).ready(function () {
             }
 
             filtradas.forEach(t => {
+
+                let detalle = '';
+                if (t.tipo === 'transferencia') {
+                    detalle = `
+            <br><small class="text-secondary">
+                Para: ${t.nombre} || Cuenta: ${t.cuenta} · ${t.banco}
+            </small>
+        `;
+                }
+
                 $('#lista').append(`
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong>${getTipoTransaccion(t.tipo)}</strong>
-                        <br><small class="text-secondary">${t.fecha || ''}</small>
-                    </div>
-                    <span class="badge ${t.tipo === 'deposito' ? 'bg-success' : 'bg-danger'} rounded-pill">
-                        $${t.monto}
-                    </span>
-                </li>
-            `);
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>${getTipoTransaccion(t.tipo)}</strong>
+                ${detalle}
+                <br><small class="text-secondary">${t.fecha || ''}</small>
+            </div>
+            <span class="badge ${t.tipo === 'deposito' ? 'bg-success' : 'bg-danger'} rounded-pill">
+                $${t.monto}
+            </span>
+        </li>
+    `);
             });
         }
 

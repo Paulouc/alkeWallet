@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(135deg, #4da8b8 0%, #444444 100%);
+  background: linear-gradient(135deg, #5db6cc 0%, #f0eed8 100%);
   /* Asegura que el fondo cubra toda la altura de la pantalla */
   min-height: 100vh;
   margin: 0;
@@ -51,6 +51,7 @@ body {
   padding: 20px;
   color: rgb(78, 77, 77);
   /* Para que el texto se lea bien */
+  
 }
 .list-group-item.selected{
   /* Color blanco con 10% de opacidad */
@@ -80,4 +81,8 @@ body {
 .form-control:focus {
   background-color: rgba(255, 255, 255, 0.2) !important;
   color: white !important;
+}
+
+.text-secondary {
+  color: rgb(179, 17, 17);
 }
