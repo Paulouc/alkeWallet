@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(135deg, #5db6cc 0%, #f0eed8 100%);
+  background: linear-gradient(135deg, #5db6cc 0%, #f0eed8c0 100%);
   /* Asegura que el fondo cubra toda la altura de la pantalla */
   min-height: 100vh;
   margin: 0;
@@ -50,7 +50,7 @@ body {
   border-radius: 15px;
   padding: 20px;
   color: rgb(78, 77, 77);
-  /* Para que el texto se lea bien */
+
   
 }
 .list-group-item.selected{
@@ -66,23 +66,20 @@ body {
   border-radius: 15px;
   padding: 20px;
   color: rgb(78, 77, 77);
-  /* Para que el texto se lea bien */
+  
 }
 
 
 /* También hay que quitar el fondo blanco a los inputs */
 .form-control {
   background-color: rgba(255, 255, 255, 0.05) !important;
-  color: white !important;
+  color: rgb(61, 60, 60) !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Cambiar el color del texto cuando escribes */
 .form-control:focus {
   background-color: rgba(255, 255, 255, 0.2) !important;
-  color: white !important;
+  color: rgb(65, 64, 64) !important;
 }
 
-.text-secondary {
-  color: rgb(179, 17, 17);
-}

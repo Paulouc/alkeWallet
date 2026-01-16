@@ -14,10 +14,17 @@
 <button id="nuevo" class="btn btn-primary mb-2">Agregar nuevo contacto</button>
 
 <form id="formContacto" class="mb-3" style="display:none;">
-  <input class="form-control mb-1" id="rut" placeholder="Rut">
-  <input class="form-control mb-1" id="nombre" placeholder="Nombre">
-  <input class="form-control mb-1" id="nCuenta" placeholder="Numero de cuenta">
-  <input class="form-control mb-1" id="banco" placeholder="Banco">
+  <input class="form-control mb-1" id="rut" placeholder="Rut" required>
+  <input class="form-control mb-1" id="nombre" placeholder="Nombre" required>
+  <input class="form-control mb-1" id="nCuenta" placeholder="Numero de cuenta" required>
+  <select id="banco" class="form-control mb1" required>
+    <option value="">Seleccione banco</option>
+    <option value="Banco Estado">Banco Estado</option>
+    <option value="Santander">Santander</option>
+    <option value="BCI">BCI</option>
+    <option value="Chile">Banco de Chile</option>
+    <option value="Falabella">Banco Falabella</option>
+</select>
   <button class="btn btn-success">Guardar</button>
   <button type="button" id="cancelar" class="btn btn-danger">Cancelar</button>
 </form>

@@ -18,7 +18,7 @@ $(document).ready(function () {
             }
         });
     }
-    let saldo = Number(localStorage.getItem('saldo'));
+    let saldo = Number(localStorage.getItem('saldo')) || 10000;
     let contactos = JSON.parse(localStorage.getItem("contactos")) || [];
 
     actualizarSaldo();
@@ -98,6 +98,11 @@ $(document).ready(function () {
             e.preventDefault();
 
             const monto = Number($('#monto').val());
+            if (monto <= 0) {
+                alert('Ingrese un monto válido');
+                return;
+            }
+
             saldo += monto;
             localStorage.setItem('saldo', saldo);
             guardarTransaccion('deposito', monto, '', '', '');
@@ -125,8 +130,11 @@ $(document).ready(function () {
             $('#lista').empty();
             lista.forEach((c, i) => {
                 $('#lista').append(`
-          <li class="list-group-item" data-i="${i}">
-            ${c.nombre}, ${c.rut}, ${c.cuenta}, ${c.banco}
+          <li class="list-group-item" data-i="${i}"> Nombre: 
+            ${c.nombre},  Rut: ${c.rut}, 
+            <br><small class="text-secondary">
+                Cuenta Bancaria: ${c.cuenta} - ${c.banco}
+            </small>
           </li>
         `);
             });
@@ -138,7 +146,10 @@ $(document).ready(function () {
 
         $('#formContacto').submit(function (e) {
             e.preventDefault();
-
+            if ($('#banco').val() === '') {
+                alert('Seleccione un banco');
+                return;
+            }
             contactos.push({
                 rut: $('#rut').val(),
                 nombre: $('#nombre').val(),
@@ -149,8 +160,9 @@ $(document).ready(function () {
             localStorage.setItem("contactos", JSON.stringify(contactos));
             render(contactos);
             this.reset();
-            $('#formContacto').hide();
-        });
+            $('#formContacto').hide(); 
+            
+    });
 
         $('#buscar').on('keyup', function () {
             const texto = $(this).val().toLowerCase();
@@ -189,7 +201,7 @@ $(document).ready(function () {
                 seleccionado.nombre
             );
 
-            $('#confirmacion').text('Transferencia a ' + seleccionado.nombre + 'realizada con exito');
+            $('#confirmacion').text('Transferencia a ' + seleccionado.nombre + ' realizada con exito');
 
             setTimeout(function () {
                 window.location.href = 'menu.html';
